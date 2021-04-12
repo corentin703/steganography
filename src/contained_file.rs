@@ -1,5 +1,6 @@
 use std::fs;
 use std::io::{Error, ErrorKind, Result, Read, Write};
+use std::path::Path;
 
 use crate::container_file::ContainerFile;
 
@@ -60,7 +61,7 @@ impl ContainedFile {
         }
     }
 
-    pub fn save(&self, save_path: &str) -> Result<fs::File> {
+    pub fn save(&self, save_path: &dyn AsRef<Path>) -> Result<fs::File> {
         let mut file = fs::File::create(save_path);
 
         if let Ok(ref mut file) = file {

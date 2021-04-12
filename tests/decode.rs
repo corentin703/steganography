@@ -5,32 +5,22 @@ use std::fs;
 use steganography::ContainedFile;
 use steganography::ContainerFile;
 
+
 #[test]
 fn test_file_dec() {
-    // let mut file = open_picture("/home/corentin/Bureau/mod.bmp").unwrap();
-    let file = fs::OpenOptions::new().read(true).open("tests/res/mod.bmp").unwrap();
-    let file = ContainerFile::from_file(file).unwrap();
+    let container_file = fs::OpenOptions::new().read(true).open("tests/res/test_dec_01.bmp").unwrap();
+    let container_file = ContainerFile::from_file(container_file).unwrap();
 
-    let mut new_file = ContainedFile::from_container_file(&file);
+    fs::create_dir("target/tests");
+    let mut contained_file = ContainedFile::from_container_file(&container_file);
 
-    file.decode(&mut new_file).unwrap();
+    container_file.decode(&mut contained_file).unwrap();
+
+    contained_file.save(&"target/tests/test_dec_01.txt").unwrap();
 
     unsafe {
-        let str = String::from_utf8_unchecked(new_file.get_buffer());
-        assert!(str.contains("Salut les amis"));
+        let str = String::from_utf8_unchecked(contained_file.get_buffer());
+        assert!(str.contains("Super ça marche !!"));
     }
 
-    // new_file.save("target/tests/mod.txt").unwrap();
 }
-
-// #[test]
-// fn dec_video_monc() {
-//     // let mut file = open_picture("/home/corentin/Bureau/mod.bmp").unwrap();
-//     let file = fs::OpenOptions::new().read(true).open("/home/corentin/Bureau/img.bmp").unwrap();
-//     let file = ContainerFile::from_file(file).unwrap();
-//
-//     let mut new_file = ContainedFile::new(file.get_content_size());
-//
-//     file.decode(&mut new_file).unwrap();
-//     new_file.save("/home/corentin/Bureau/vid.txt").unwrap();
-// }

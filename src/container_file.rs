@@ -1,11 +1,10 @@
 use std::fs;
 use std::io::{Error, ErrorKind, Result, Read, Write};
+use std::path::Path;
 
 use crate::contained_file::ContainedFile;
 
-// const SIZE_OFFSET_START_BMP: usize = 9;
-// const SIZE_START: usize = 137;
-const SIZE_START: usize = 73;
+const SIZE_START: usize = 137;
 
 pub struct ContainerFile {
     v_file_buffer: Vec<u8>,
@@ -35,11 +34,7 @@ impl ContainerFile {
         self.v_file_buffer.len()
     }
 
-    // fn get_start_offset(&self) -> usize {
-    //     0
-    // }
-
-    pub fn save(&mut self, save_path: &str) -> Result<fs::File> {
+    pub fn save(&mut self, save_path: &dyn AsRef<Path>) -> Result<fs::File> {
         let mut file = fs::File::create(save_path);
 
         if let Ok(ref mut file) = file {
