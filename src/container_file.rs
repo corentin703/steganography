@@ -4,13 +4,24 @@ use std::path::Path;
 
 use crate::contained_file::ContainedFile;
 
+/// Numéro de l'octet à partir duquel écraser / lire les LSB
 const SIZE_START: usize = 137;
 
+/// Représente un fichier contenant
 pub struct ContainerFile {
+
+    /// Contient l'intégralité du fichier contenant
     v_file_buffer: Vec<u8>,
 }
 
 impl ContainerFile {
+
+    /// Crée et retourne une structure de type fichier contenant à partir d'un fichier
+    ///
+    /// # Arguments
+    ///
+    /// * `file` - Fichier à partir duquel instancier la structure de fichier contenant
+    ///
     pub fn from_file(mut file: fs::File) -> Result<ContainerFile> {
 
         if let Ok(metadata) = file.metadata() {
@@ -30,10 +41,17 @@ impl ContainerFile {
         }
     }
 
+    /// Retourne le nombre d'octet du fichier contenant
     pub fn get_content_size(&self) -> usize {
         self.v_file_buffer.len()
     }
 
+    /// Sauvegarde le fichier vers la destination choisie
+    ///
+    /// # Arguments
+    ///
+    /// * `save_path` - Chemin auquel sauvegarder le fichier
+    ///
     pub fn save(&mut self, save_path: &dyn AsRef<Path>) -> Result<fs::File> {
         let mut file = fs::File::create(save_path);
 
@@ -44,6 +62,12 @@ impl ContainerFile {
         file
     }
 
+    /// Encode / cache un fichier dans le conteneur
+    ///
+    /// # Arguments
+    ///
+    /// * `source_file` - Fichier à cacher (fichier contenu)
+    ///
     pub fn encode(&mut self, source_file: &ContainedFile) -> Result<()> {
         // const SIZE_START: usize = 137;
 
@@ -77,6 +101,12 @@ impl ContainerFile {
         }
     }
 
+    /// Décode / récupère un fichier caché dans le conteneur
+    ///
+    /// # Arguments
+    ///
+    /// * `dest_file` - Fichier contenu à remplir avec les octets récupérés
+    ///
     pub fn decode(&self, dest_file: &mut ContainedFile) -> Result<()> {
         // const SIZE_START: usize = 137;
 
